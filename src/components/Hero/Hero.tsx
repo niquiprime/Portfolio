@@ -1,12 +1,18 @@
 import React from "react";
 import { FaGithub } from "react-icons/fa";
-import { FaLinkedin, FaChevronDown } from "react-icons/fa6";
+import { FaLinkedin, FaChevronDown } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
+import Aurora from "./Aurora";
+
 import FotoPerfil from "../../assets/Perfil.jpg";
 
 const Hero: React.FC = () => {
   return (
-    <section className="from-swamp-600 to-swamp-800 text-swamp-50 relative flex min-h-screen w-full flex-col justify-center overflow-hidden bg-gradient-to-br">
+    <section className="text-swamp-50 relative flex min-h-screen w-full flex-col justify-center overflow-hidden">
+      <div className="absolute inset-0 -z-1">
+        <Aurora colorStops={["#75875b", "#5b6a46", "#475239"]} speed={0.75} />
+      </div>
+
       <div className="container mx-auto px-4 py-32">
         <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
           <div className="max-w-2xl">
