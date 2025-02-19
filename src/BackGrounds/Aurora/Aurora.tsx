@@ -1,10 +1,28 @@
 import { Renderer, Program, Mesh, Color, Triangle } from "ogl";
 import { useEffect, useRef } from "react";
 
+export interface CommonProps {
+  onReady?: () => void;
+}
+
+export interface TimeProps {
+  time?: number;
+  speed?: number;
+}
+
+export interface ControlProps {
+  paused?: boolean;
+}
+
+export interface AuroraProps extends CommonProps, TimeProps, ControlProps {
+  colorStops?: [string, string, string];
+  amplitude?: number;
+}
+
 const VERT = `#version 300 es
 in vec2 position;
 void main() {
-  gl_Position = vec4(position, 0.0, 1.0);
+    gl_Position = vec4(position, 0.0, 1.0);
 }
 `;
 
@@ -22,7 +40,7 @@ vec3 permute(vec3 x) {
     return mod(((x * 34.0) + 1.0) * x, 289.0);
 }
 
-float snoise(vec2 v){
+float snoise(vec2 v) {
     const vec4 C = vec4(
         0.211324865405187, 0.366025403784439,
         -0.577350269189626, 0.024390243902439
@@ -54,7 +72,7 @@ float snoise(vec2 v){
     vec3 h = abs(x) - 0.5;
     vec3 ox = floor(x + 0.5);
     vec3 a0 = x - ox;
-    m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+    m *= 1.79284291400159 - 0.85373472095314 * (a0 * a0 + h * h);
 
     vec3 g;
     g.x  = a0.x  * x0.x  + h.x  * x0.y;
@@ -82,23 +100,22 @@ struct ColorStop {
 }
 
 void main() {
-    // Compute UVs from gl_FragCoord
+    // Compute UV coordinates from the fragment coordinate and resolution.
     vec2 uv = gl_FragCoord.xy / uResolution;
-    
-    // Build our three color stops from uniform array uColorStops
+
+    // Build our three color stops from uniform array uColorStops.
     ColorStop colors[3];
     colors[0] = ColorStop(uColorStops[0], 0.0);
     colors[1] = ColorStop(uColorStops[1], 0.5);
     colors[2] = ColorStop(uColorStops[2], 1.0);
 
-    // Interpolate color along uv.x
+    // Interpolate color along uv.x.
     vec3 rampColor;
     COLOR_RAMP(colors, uv.x, rampColor);
 
-    // Noise-based "height," scaled by amplitude
-    float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) 
-                   * 0.5 
-                   * uAmplitude;
+    // Noise-based "height," scaled by amplitude.
+    float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25))
+                   * 0.5 * uAmplitude;
     height = exp(height);
     height = (uv.y * 2.0 - height + 0.2);
 
@@ -107,13 +124,14 @@ void main() {
 }
 `;
 
-export default function Aurora(props) {
+export default function Aurora(props: AuroraProps) {
   const { colorStops = ["#00d8ff", "#7cff67", "#00d8ff"], amplitude = 1.0 } =
     props;
-  const propsRef = useRef(props);
+
+  const propsRef = useRef<AuroraProps>(props);
   propsRef.current = props;
 
-  const ctnDom = useRef(null);
+  const ctnDom = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctn = ctnDom.current;
@@ -123,7 +141,8 @@ export default function Aurora(props) {
     const gl = renderer.gl;
     gl.clearColor(1, 1, 1, 1);
 
-    let program;
+    // Declare program variable so it's available in the resize callback.
+    let program: Program;
 
     function resize() {
       if (!ctn) return;
@@ -136,16 +155,19 @@ export default function Aurora(props) {
     }
     window.addEventListener("resize", resize);
 
+    // Create a full-screen triangle.
     const geometry = new Triangle(gl);
+    // Remove the UV attribute since we now compute UVs in the fragment shader.
     if (geometry.attributes.uv) {
       delete geometry.attributes.uv;
     }
 
     const colorStopsArray = colorStops.map((hex) => {
       const c = new Color(hex);
-      return [c.r, c.g, c.b];
+      return [c.r, c.g, c.b] as [number, number, number];
     });
 
+    // Initialize the shader program with the new uResolution uniform.
     program = new Program(gl, {
       vertex: VERT,
       fragment: FRAG,
@@ -161,7 +183,7 @@ export default function Aurora(props) {
     ctn.appendChild(gl.canvas);
 
     let animateId = 0;
-    const update = (t) => {
+    const update = (t: number) => {
       animateId = requestAnimationFrame(update);
       const { time = t * 0.01, speed = 1.0 } = propsRef.current;
       program.uniforms.uTime.value = time * speed * 0.1;
@@ -169,12 +191,11 @@ export default function Aurora(props) {
       const stops = propsRef.current.colorStops ?? colorStops;
       program.uniforms.uColorStops.value = stops.map((hex) => {
         const c = new Color(hex);
-        return [c.r, c.g, c.b];
+        return [c.r, c.g, c.b] as [number, number, number];
       });
       renderer.render({ scene: mesh });
     };
     animateId = requestAnimationFrame(update);
-
     resize();
 
     return () => {
@@ -185,8 +206,7 @@ export default function Aurora(props) {
       }
       gl.getExtension("WEBGL_lose_context")?.loseContext();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amplitude]);
+  }, [amplitude, colorStops]);
 
   return <div ref={ctnDom} className="h-full w-full" />;
 }

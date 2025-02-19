@@ -3,15 +3,11 @@ import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Projects: React.FC = () => {
   return (
-    <section
-      className="bg-swamp-50 py-20"
-      id="projects"
-      aria-labelledby="projects-title"
-    >
+    <section className="py-20" id="projects" aria-labelledby="projects-title">
       <div className="container mx-auto px-4">
         <h2
           id="projects-title"
-          className="text-swamp-800 mb-12 text-left text-4xl font-bold"
+          className="text-swamp-50 mb-12 text-left text-4xl font-bold"
         >
           Mis Proyectos
         </h2>
@@ -19,7 +15,7 @@ const Projects: React.FC = () => {
           {[1, 2, 3].map((project) => (
             <article
               key={project}
-              className="group overflow-hidden rounded-lg bg-white shadow-lg transition-shadow hover:shadow-xl"
+              className="group bg-swamp-50 overflow-hidden rounded-lg shadow-lg transition-shadow hover:shadow-xl"
             >
               <div className="relative">
                 <img
@@ -36,7 +32,7 @@ const Projects: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="p-6">
+              <div className="text-swamp-950 p-6">
                 <h3>Proyecto {project}</h3>
                 <p className="text-swamp-600 mb-4">
                   Una breve descripción del proyecto y las tecnologías

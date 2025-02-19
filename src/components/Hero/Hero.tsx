@@ -1,10 +1,12 @@
 import React from "react";
 import { FaGithub } from "react-icons/fa";
+import { FaCode } from "react-icons/fa6";
 import { FaLinkedin, FaChevronDown } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
-import Aurora from "./Aurora";
 
-import FotoPerfil from "../../assets/Perfil.jpg";
+import Aurora from "../../BackGrounds/Aurora/Aurora";
+
+import FotoPerfil from "../../assets/Perfil.webp";
 
 const Hero: React.FC = () => {
   return (
@@ -12,14 +14,14 @@ const Hero: React.FC = () => {
       <div className="absolute inset-0 -z-1">
         <Aurora colorStops={["#75875b", "#5b6a46", "#475239"]} speed={0.75} />
       </div>
-
       <div className="container mx-auto px-4 py-32">
         <div className="flex flex-col items-center justify-between gap-12 md:flex-row">
           <div className="max-w-2xl">
-            <h1 className="mb-6 text-5xl font-bold md:text-7xl">
+            <FaCode className="h-6 w-6" aria-hidden="true" />
+            <h1 className="text-swamp-50 text-5xl font-bold md:text-7xl">
               Hola! soy <span className="text-swamp-300">Nicolás</span>
             </h1>
-            <p className="text-swamp-100 mb-8 text-xl md:text-2xl">
+            <p className="text-swamp-100 mt-8 mb-8 text-xl md:text-2xl">
               Desarrollador Full Stack especializado en crear experiencias
               digitales excepcionales
             </p>

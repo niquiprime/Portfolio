@@ -44,11 +44,11 @@ const skills = [
 
 const Skills: React.FC = () => {
   return (
-    <section className="bg-swamp-50 py-20">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         <h2
           id="skills-title"
-          className="text-swamp-800 mb-12 text-left text-4xl font-bold"
+          className="text-swamp-50 mb-12 text-left text-4xl font-bold"
         >
           Habilidades
         </h2>
